@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.8 to 0.8.9.9 | DBFlute.NET</title>
+</head>
+<body>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.8 to 0.8.9.9</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<h3>同梱するJDBCドライバの整理(Oracle, DB2)</h3>
+	<p>
+		OracleのJDBCドライバ「ojdbc5.jar」およびDB2のJDBCドライバ「db2jcc.jar」がこのバージョンから同梱されないようになりました。
+		DBFluteの構造とこれらJDBCドライバの構造が相性が悪いため、ユーザが明示的にJDBCドライバを取得してきて、
+		DBFluteモジュールに配置する方が良いと考えました。
+		手順についてはOracleは<a href="http://dbflute.sandbox.seasar.org/ja/manual/reference/dbway/oracle/index.html">こちら</a>、DB2は<a href="http://dbflute.sandbox.seasar.org/ja/manual/reference/dbway/db2/index.html">こちら</a>
+	</p>
+	<h4>JDBCドライバの整理について補足</h4>
+	<p>
+		JDK-5.0と6.0ではJDBCのインターフェースが微妙に違うなど(その他もろもろ)の原因で、
+		JDBCドライバ固定だと実行できる環境が限られてしまうような場合は、
+		ユーザが明示的にJDBCドライバを取得して配置する方式を取っていく方針です。
+	</p>
+	<h3>DBFluteモジュール内のライブラリの位置を移動</h3>
+	<p>
+		「dbflute-0.x.x.x/lib/forExecute」が「dbflute-0.x.x.x/lib」に変更されました。
+	</p>
+	<p>
+		通常の利用では意識する必要は全くありませんが、万が一、DBFluteモジュールの構造に依存した拡張スクリプトなどを
+		書かれている場合は注意して下さい。
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<p>
+		特になし
+	</p>
+<!-- __content-end__ --></div>
+
+</body>
+</html>

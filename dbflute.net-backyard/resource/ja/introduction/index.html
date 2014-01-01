@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,紹介,C#版,Javaとの違い" />
+	<style type="text/css" title="currentStyle">@import "../../css/dfnet-sub.css";</style>
+	<title>DBFlute.NETの紹介 | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>DBFlute.NETの紹介</h1>
+	${indexlist}
+
+	<h2 id="about">DBFlute.NETとは？</h2>
+	<p>
+		Apache Torque と S2Dao を参考に、<em class="keyword">現場にフィットすることを重視</em> したO/Rマッパの
+		<em class="keyword">.NET環境版</em> です。Javaの代わりに、C# のクラスを自動生成します。
+	</p>
+	<p>
+		単に "DBFlute" と言ったとき、"Java版・C#版を問わずにDBFlute全体のこと" もしくは "Java版だけのこと"
+		を指す場合が多く、C#版のDBFluteを明確に表現するときは、"DBFlute.NET"
+		と表現されます。但し、明らかにC#版のDBFluteであることがわかる場合は、単に "DBFlute"
+		と表現することもあります(DBFlute.NETのドキュメント内など)。
+	</p>
+	<p>
+		O/Rマッパとしての、特徴や概念・ポリシーに関しては、Java版のものと同様ですので、詳しくはそちらのサイトをご覧下さい。
+	</p>
+	<div class="detailpage"><a href="http://dbflute.sandbox.seasar.org/ja/introduction/index.html">Java版 - DBFluteの紹介</a></div>
+	<p>
+		ここでは、Java版との違いに着目して、DBFlute.NET特有の特徴を紹介します。
+	</p>
+
+	<h2 id="structure">DBFlute.NETの構造</h2>
+	<p>
+		自動生成されるソースは C# であり、アプリの実行環境では当然 Java は不要ですが、自動生成プロセスの実行環境において
+		Java(JRE) を利用するのは同じです。だたし、DBFluteモジュールはそれぞれ独立して管理されており、
+		最新のバージョン、ダウンロードするページなども違いますので、DBFlute.NETのページからダウンロードしてください。
+	</p>
+	<div class="relatedpage"><a href="http://dbflute.net.sandbox.seasar.org/ja/environment/newest.html">DBFlute.NETの最新バージョン</a></div>
+	<p>
+		Java版は、DIコンテナに依存せず、かつ、自前でDBアクセスを行うライブラリを有していますが、DBFlute.NETは、Quill
+		を唯一のDIコンテナとし、また、DBアクセスを行うライブラリとして S2Dao.NET
+		を利用しています。ゆえに、DBFlute.NETを利用する際は、必ず Quill + DBFlute.NET + S2Dao.NET
+		という構成になります。
+	</p>
+	<div class="relatedpage"><a href="http://s2container.net.seasar.org/ja/quill.html">外部サイト - Quill</a></div>
+	<h3 id="performance">パフォーマンス考慮</h3>
+	<p>
+		DBFlute.NETの場合、DBアクセスを実行するのは "DBFluteランタイム" ではなく、S2Dao.NET
+		です。それゆえ、ちょっとした内部的な動作の違いがところどころに存在しますが、パフォーマンス考慮に関してはJava版と全く同じ考慮がされています。
+	</p>
+	<div class="relatedpage"><a href="http://dbflute.sandbox.seasar.org/ja/introduction/performance.html">Java版 - パフォーマンス考慮</a></div>
+
+	<h2 id="support">サポート面の違い</h2>
+	<h3 id="javadocument">Java版のドキュメント</h3>
+	<p>
+		DBFlute.NETだけで完結したドキュメントは、存在しません。
+		基本的には、Java版のドキュメントがベースとなり、DBFlute.NET側には、その違いだけを綴ったドキュメントが存在します。
+		アーキテクト、ディベロッパー共に、違いを理解した上でJava版のドキュメントを読むようにして下さい。
+	</p>
+	<div class="relatedpage"><a href="http://dbflute.sandbox.seasar.org/ja/tutorial/architect.html">Java版 - アーキテクトのためのチュートリアル</a></div>
+	<div class="relatedpage"><a href="http://dbflute.sandbox.seasar.org/ja/tutorial/developer.html">Java版 - ディベロッパーのためのチュートリアル</a></div>
+	<h3 id="javaword">Javaっぽい用語</h3>
+	<p>
+		ドキュメント上で、Javaっぽい用語が利用されます。例えば、DBFlute.NETの説明で "パッケージ"
+		と出てきた場合、大抵の場合それは "名前空間" を示します。また、"Bean" という言葉もご容赦下さい。
+	</p>
+	<h3 id="csharpcomment">コード上のコメントが皆無</h3>
+	<p>
+		コンパイルスピードの確保・リソースの問題の点から、C# クラスやメソッドのコメントは(ほとんど)存在しません。
+		(Java版(Eclipse)では(C# 環境に比べて)比較的コンパイルスピードが問題になることが少ないため、JavaDocコメントが存在します)
+	</p>
+	<p>
+		但し、これは時代の流れと共に状況が変わってくる可能性があるため(PCリソースの向上やコンパイラの進化など)、将来的にはコメントの付与も視野に入れています。
+	</p>
+
+	<h2 id="funcdiff">機能面の違い</h2>
+	<h3 id="notimplfunc">まだ実装されていない機能</h3>
+	<p>
+		以下、DBFlute.NETではまだ実装されていない主な機能です。但し、実装予定は全て未定です。
+	</p>
+	<ul>
+		<li>ConditionBeanによる scalarSelect() (スカラ検索：最大値など)</li>
+		<li>ConditionBeanによる selectCursor() (大量データ検索)</li>
+		<li>外だしSQLのBEGINコメントのネスト利用</li>
+		<li>外だしSQLのFORコメント</li>
+		<li>Behaviorの varyingUpdate()</li>
+		<li>ConditionBeanの OrScopeQuery 内での and 条件</li>
+		<li>ConditionBeanの ColumnQuery <em class="keyword">※0.8.9.18より対応</em></li>
+		<li>Oracleのselect句の30文字問題の回避 <em class="keyword">※0.8.9.18より対応</em></li>
+	</ul>
+	<h3 id="unsupportedfunc">実装予定のない機能</h3>
+	<p>
+		以下、DBFlute.NETでは、必要性やリソースの問題から実装される予定のない主な機能です。
+	</p>
+	<ul>
+		<li>シーケンスキャッシュ</li>
+		<li>プロシージャの ResultSet 対応</li>
+		<li>LikeSearchOptionの AsSplit</li>
+		<li>PKなしテーブルへの insert オプション</li>
+		<li>ConditionBeanの CheckSaeftyResult</li>
+		<li>ConditionBeanの EmbedCondition</li>
+		<li>外だしSQLのブロックコメントの削除</li>
+		<li>外だしSQLの行コメントの削除</li>
+		<li>外だしSQLのSQLのフォーマット</li>
+	</ul>
+	<h3 id="otherfunc">その他、細かい機能</h3>
+	<p>
+		その他、(細かい挙動の違いを含めて)DBFlute.NETには存在していない機能が存在します。
+	</p>
+
+	<h2 id="envdiff">環境上の違い</h2>
+	<p>
+		Java版と変わる環境周りの主な違いは以下の通りです。
+	</p>
+	<dl class="textlist">
+		<dt>AllCommonパッケージ</dt>
+		<dd>
+			Java版におけるDBFluteランタイムのクラス(一部除く)が、AllCommonパッケージ(名前空間)配下に自動生成されます。
+			DBFluteのフレームワーク(ConditionBeanなどを解析するクラスなど)ごと自動生成されていると言えます。
+		</dd>
+		<dt>自動生成クラスをプロジェクトに追加</dt>
+		<dd>
+			自動生成されたクラスは、VisualStudio上で明示的に "プロジェクトに追加"
+			する必要がります。特にテーブルを追加した後の再自動生成では、プロジェクトに追加する必要のあるクラスファイルが、
+			それぞれのディレクトリに散らばっています。Koropokkur.NET
+			には、これらファイルのプロジェクトへの追加を支援する機能があります。
+			<div class="relatedpage"><a href="#koropokkur">this - Koropokkur.NET</a></div>
+		</dd>
+		<dt>generateOutputDirectory</dt>
+		<dd>basicInfoMap.dfprop の generateOutputDirectory のデフォルト値は、'../source'</dd>
+		<dt>outputPackageAdjustmentMap</dt>
+		<dd>
+			basicInfoMap.dfprop の outputPackageAdjustmentMap に、C#特有の
+			flatDirectoryPackage, omitDirectoryPackage プロパティが存在します。
+			パッケージ(名前空間)とディレクトリ構造が不一致が許される C# ならではの調整プロパティです。
+		</dd>
+		<dt>quillDataSourceName</dt>
+		<dd>
+			dependencyInjectionMap.dfprop に、C#特有の quillDataSourceName
+			プロパティが存在します。Quillで管理されているDataSourceの中でどのDataSourceを利用するかを指定します。
+			複数DB対応時などに利用します。逆に、同dfprop内の別のプロパティはほとんどDBFlute.NETでは利用されないプロパティです。
+		</dd>
+		<dt>extendedS2DaoSettingClass</dt>
+		<dd>
+			littleAdjustmentMap.dfprop に、C#特有の extendedS2DaoSettingClass
+			プロパティが存在します。DBFlute.NETが利用するS2Dao.NETを拡張する設定クラスを指定します。
+			DBFlute.NET独自の拡張に加えて、アプリケーションで独自の拡張を加えたいときに利用します。
+		</dd>
+		<dt>dbParameterParser</dt>
+		<dd>
+			DBFluteConfig に、C#特有の dbParameterParser
+			プロパティが存在します。S2Dao.NET内部で行われるDBパラメータの解析に拡張を加えたいときに利用します。
+		</dd>
+		<dt>defaultPackage</dt>
+		<dd>
+			outsideSqlDefinitionMap.dfprop に、C#特有の defaultPackage
+			プロパティが存在します。既定の名前空間を利用してい場合に、その名前空間を指定することで、外だしSQLを探すパスが調整されます。
+		</dd>
+		<dt>omitResourcePathPackage</dt>
+		<dd>
+			outsideSqlDefinitionMap.dfprop に、C#特有の omitResourcePathPackage
+			プロパティが存在します。リソース(外だしSQL)を探すパスから省略したい名前空間を指定します。
+		</dd>
+		<dt>omitFileSystemPathPackage</dt>
+		<dd>
+			outsideSqlDefinitionMap.dfprop に、C#特有の omitFileSystemPathPackage
+			プロパティが存在します。外だしSQLのSQLファイルをファイルシステム上に配置して、それをアプリから読み込んで実行する際の(この機能自体が C#
+			特有)探すパスから省略したい名前空間を指定します。
+		</dd>
+		<dt>additionalAssemblyProvider</dt>
+		<dd>
+			DBFluteConfig に、C#特有の additionalAssemblyProvider
+			プロパティが存在します。外だしSQLのSQLファイルの配置アセンブリをさらに追加したい場合に利用します。(C#
+			では、リソースファイルの指定に探す対象のアセンブリの指定が必要なため)
+		</dd>
+		<dt>fileSystemPathResolver</dt>
+		<dd>
+			DBFluteConfig に、C#特有の fileSystemPathResolver
+			プロパティが存在します。外だしSQLのSQLファイルをファイルシステム上に配置して、それをアプリから読み込んで実行する際に(この機能自体が C#
+			特有)、そのファイルシステムのパスを(デフォルトと合わない場合に)調整します。
+		</dd>
+	</dl>
+	<p>
+		外だしSQLを探すパスを調整するプロパティに関しては、環境に合わせて色々なプロパティを組み合わせて利用します。
+		複雑になりがちなので都度の検証と合わせて設定するようにして下さい。
+	</p>
+	<h3 id="otherfunc">その他、細かい環境の違い</h3>
+	<p>
+		その他、DBFlute.NETには存在していないプロパティなど、Java版との環境の違いが存在します。
+	</p>
+
+	<h2 id="impldiff">実装上の違い</h2>
+	<p>
+		主に、ディベロッパーが実装しているときに意識するJava版との違いです。
+		Java版のドキュメントを参照する前に、これらの違いを必ず理解するようにして下さい。
+	</p>
+	<h3 id="property">プロパティの採用</h3>
+	<p>
+		C#の言語仕様である "プロパティ" を、Entity
+		等におけるプロパティに採用しています。ゆえに、プロパティを呼び出すときに、Java版とはファーストタッチが変わりますのでご注意下さい。
+	</p>
+<pre><span class="codetitle">ex) Entityのプロパティ {MEMBER} @Java</span><code>
+Member member = <span class="keyword">new</span> Member();
+member.<span class="point">MemberId</span> = <span class="literal">3</span>;
+member.<span class="point">MemberName</span> = <span class="literal">"Savicevic"</span>;
+String memberName = member.<span class="point">MemberName</span>;
+
+<span class="comment">// if Java</span>
+<span class="comment">//member.setMemberId(3);</span>
+<span class="comment">//member.setMemberName("Savicevic");</span>
+<span class="comment">//String memberName = member.getMemberName();</span>
+</code></pre>
+	<p>
+		但し、区分値を設定する場合などは、Set
+		で始まるメソッドで表現されます。通常の値の設定と、区分値の設定ではファーストタッチが変わりますのでご注意下さい。
+	</p>
+<pre><span class="codetitle">ex) Entityのプロパティ {MEMBER} @Java</span><code>
+Member member = <span class="keyword">new</span> Member();
+member.<span class="point">SetMemberStatusCode_Formalized()</span>;
+<span class="comment">//member.MemberStatusCode = "FML";
+</code></pre>
+	<h3 id="methodinit">メソッド・プロパティの先頭は大文字</h3>
+	<p>
+		言語の違いによる習慣の違いです(Javaは先頭が小文字)。
+		一部、ディベロッパーが目にすることはほとんどないと想定される内部クラスでのメソッドでは、
+		先頭が小文字のものがあります。
+	</p>
+<pre><span class="codetitle">ex) ConditionBeanやBehaviorのメソッド名の先頭 {MEMBER} @Java</span><code>
+cb.Query().<span class="point">SetMemberName_Equal</span>(value);
+<span class="abbreviation">...</span> = <span class="attribute">memberBhv</span>.<span class="point">SelectList</span>(cb);
+</code></pre>
+	<p>
+		コンパイル言語ですので、コード補完等の支援により、プログラム上ではこの違いで悩まされることは少ないと考えられますが、
+		唯一、明確に気を付けるべき箇所があります。それは、外だしSQLのパラメータコメント上でのプロパティの参照です。
+		ここはコード補完が効かず、かつ、プロパティ名の先頭文字の規則がJava版と違うため、注意が必要です。
+		(Java版のドキュメントを読むときにご注意下さい)
+	</p>
+	<dl class="valuemainlist">
+		<dt>Java</dt><dd>先頭が小文字 (memberName)</dd>
+		<dt>C#</dt><dd>先頭が大文字 (MemberName)</dd>
+	</dl>
+<pre><span class="codetitle">ex) 会員テーブルの会員名称が 'Stojkovic' であること {MEMBER, MEMBER_NAME} @OutsideSql</span><code>
+<span class="comment">/*IF pmb.MemberName != null*/</span>
+<span class="keyword">and</span> MEMBER_NAME <span class="keyword">like</span> <span class="comment">/*pmb.MemberName*/</span><span class="attribute">'S%'</span>
+<span class="comment">/*END*/</span>
+</code></pre>
+	<h3 id="callback">コールバックで delegate</h3>
+	<p>
+		コールバックを実装するのに、インターフェースではなく delegate
+		を利用します(但し、複数メソッドが必要な箇所では同じくインターフェース方式)。
+	</p>
+<pre><span class="codetitle">ex) ExistsReferrerのコールバックで delegate {MEMBER, PURCHASE} @Java</span><code>
+MemberCB cb = <span class="keyword">new</span> MemberCB();
+cb.Query().ExistsPurchaseList(<span class="point">delegate</span>(PurchaseCB subCB) {
+    subCB.Query().SetPurchasePrice_GreaterEqual(<span class="literal">2000</span>);
+});
+</code></pre>
+	<h3 id="embeddedresource">埋め込まれたリソース</h3>
+	<p>
+		外だしSQLを利用する際に、SQLファイルの "ビルドアクション" を "埋め込まれたリソース"
+		に設定する必要があります(ファイルシステムに配置する場合はまた別の設定が必要)。
+		SQLファイルを作成したら、必ずこの作業を忘れずに行って下さい。
+		(しなかった場合は、実行時に "SQLファイルが見つからない" というエラーになります)
+	</p>
+	<p>
+		Koropokkur.NET には、これらファイルのプロジェクトへの追加を支援する機能があります。
+	</p>
+	<div class="relatedpage"><a href="#koropokkur">this - Koropokkur.NET</a></div>
+
+	<h2 id="example">Exampleのススメ</h2>
+	<p>
+		環境面・実装面で参考になるExampleプロジェクトが存在します。特にディベロッパーは、Behavior や
+		ConditionBean、外だしSQLなどの実際のコード例を見て理解できるように、必ずチェックアウトして実装中いつでも参照できるようにして下さい。
+	</p>
+	<dl class="valuemainlist">
+		<dt>SVNリポジトリURL</dt>
+		<dd><a href="https://www.seasar.org/svn/sandbox/dbflute.net">https://www.seasar.org/svn/sandbox/dbflute.net</a></dd>
+		<dt>Exampleプロジェクト</dt>
+		<dd><a href="https://www.seasar.org/svn/sandbox/dbflute.net/trunk/dfnet-basic-example">dfnet-basic-example</a> (trunk)</dd>
+	</dl>
+
+	<h2 id="vivatool">ツールのススメ</h2>
+	<h3 id="resharper">ReSharperのススメ</h3>
+	<p>
+		必須ではありませんが、ReSharper の利用をお奨めします。
+	</p>
+	<div class="relatedpage"><a href="http://www.jetbrains.com/resharper/">外部サイト - ReSharper</a></div>
+	<p>
+		実装をする際の様々な支援機能が付いています。DBFlute.NETのようなタイプセーフが特徴の実装スタイルにおいては、
+		ReSharper の機能を利用することで、その最大限の力を発揮するでしょう。(特に、キャメルケースコード補完など)
+	</p>
+	<div class="relatedpage"><a href="http://dbflute.sandbox.seasar.org/ja/manual/function/ormapper/conditionbean/howto.html#camelcase">Java版 - (CB)キャメルケースコード補完</a></div>
+	<h3 id="koropokkur">Koropokkur.NETのススメ</h3>
+	<p>
+		必須ではありませんが、必須と言えるくらいの機能を持つ Koropokkur.NET の利用をお奨めします。
+	</p>
+	<div class="relatedpage"><a href="http://koropokkur.net.sandbox.seasar.org/">外部サイト - Koropokkur.NET</a></div>
+	<p>
+		特に、その中の "VSArrange" は、VisualStudioと自動生成ツールとの相性のズレを解消してくれるため、DBFlute.NETでは重宝します。
+		テーブルの追加による新しいクラスのプロジェクトへの追加、テーブルの削除による古いクラスのプロジェクトからの削除、これらを一括で自動調整してくれます。
+		(アップグレード時の新しいクラスの追加・削除にも役に立ちます)
+	</p>
+<!-- __content-end__ --></div></div>
+
+</div>
+</body>
+</html>

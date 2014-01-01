@@ -1,0 +1,130 @@
+@charset "UTF-8";
+
+/* ---------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------- css reset { */
+/* ---------------------------------------------------------------------------------------- */
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code,
+del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0px;
+	padding: 0;
+	border: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+/* ------------------------------------------------------------------------------- reset } */
+
+/* ---------------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- base layout { */
+/* ---------------------------------------------------------------------------------------- */
+body {
+}
+#header {
+}
+#container {
+	width: 750px;
+	margin-left: 100px;
+}
+#footer {
+	height: 80px;
+}
+/* -------------------------------------------------------------------------- base layout } */
+
+/* ---------------------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------- base font & color { */
+/* ---------------------------------------------------------------------------------------- */
+body {
+	font-family: Verdana, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "MS P Gothic", "ＭＳ Ｐゴシック", sans-serif;
+	background-color: #eee;
+}
+#container {
+	background-color: #fcffff;
+	border-left: solid 1px #ccc;
+	border-right: solid 1px #ccc;
+}
+#header, #footer {
+	background-color: #fff;
+}
+#content {
+	border-bottom: solid 1px #ccc;
+}
+/* --------------------------------------------------------------------- base font & color } */
+
+/* ---------------------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------- header { */
+/* ---------------------------------------------------------------------------------------- */
+#header {
+	padding: 50px;
+	border-bottom: solid 1px #ccc;
+}
+#header div.top-link {
+	font-size: 197%;/*26px*/
+}
+#header div.top-link a {
+	color: #000;
+	text-decoration: none;
+}
+#header div.top-link a:hover {
+	color: #333;
+}
+#header div.navi-upper {
+	margin-top: -80px;
+	padding: 8px 10px 0 0;
+	text-align: right;
+	color: #666;
+	font-size: 77%;/*10px*/
+}
+#header div.navi-upper a {
+	color: #444;
+	margin: 0 1em;
+	letter-spacing: 0.2em;
+}
+#header div.header-lower {
+	margin-top: 50px;
+	padding: 20px 0 0 20px;
+}
+/* ------------------------------------------------------------------------------- header } */
+
+/* ---------------------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------- footer { */
+/* ---------------------------------------------------------------------------------------- */
+#footer {
+	padding-top: 50px;
+	font-size: 77%;/*10px*/
+}
+#footer div {
+	color: #666;
+	text-align: center;
+	width: 300px;
+	margin: 0 auto;
+	padding-bottom: 10px;
+	border-bottom: solid 1px #999;
+}
+#footer div a {
+	margin: 0 10px;
+}
+#footer ul.footer-navi {
+	margin: 10px 0;
+	text-align: center;
+}
+#footer ul.footer-navi ul {
+	display: inline;
+}
+#footer li {
+	display: inline;
+	list-style-type: none;
+	margin: 5px;
+}
+#footer a{
+	text-decoration: none;
+	color: #666;
+}
+#footer a:hover{
+	text-decoration: underline;
+}
+/* ------------------------------------------------------------------------------- footer } */

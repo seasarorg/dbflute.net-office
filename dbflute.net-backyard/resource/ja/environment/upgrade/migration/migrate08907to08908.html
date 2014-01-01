@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.7 to 0.8.9.8 | DBFlute.NET</title>
+</head>
+<body>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.7 to 0.8.9.8</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<h3>ReplaceSchemaでプロシージャがDropされます</h3>
+	<p>
+		ReplaceSchemaの改善として、スキーマの初期化処理でプロシージャがDropされます。
+		基本的にcreate or replace構文を使っていれば通常は問題ありませんでしたが、
+		プロシージャの名前を変えた後などに古い名前の方のプロシージャがDBに残っていました。
+		それが、しっかり削除されるようになっています。 
+	</p>
+	<p>
+		改善点ではありますが、ReplaceSchemaでプロシージャが削除されないことに依存して利用している方はご注意下さい。
+		プロシージャが削除されないようにするには、replaceSchemaDefinitionMap.dfpropにて
+		「isSuppressDropProcedure = true」を追加することで抑制できます。
+	</p>
+	<h3>ReplaceSchemaでDBリンクがDropされます</h3>
+	<p>
+		ReplaceSchemaの改善として、スキーマの初期化処理でDBリンクがDropされます。
+	</p>
+	<p>
+		改善点ではありますが、ReplaceSchemaでDBリンクが削除されないことに依存して利用している方はご注意下さい。
+		プロシージャが削除されないようにするには、replaceSchemaDefinitionMap.dfpropにて
+		「isSuppressDropDBLink = true」を追加することで抑制できます。
+	</p>
+	<h3>Sql2Entityでパッケージ付きプロシージャのクラス名にパッケージ名が</h3>
+	<p>
+		Sql2Entityでパッケージ付きプロシージャのParameterBeanのクラス名にパッケージ名が付与されます。
+		これにて、別パッケージ同名プロシージャを取り扱うことができるようになりました。
+	</p>
+	<p>
+		改善点ではありますが、パッケージ付きプロシージャをDBFluteで利用している方は、自動生成後にコンパイルエラーになりますのでご注意下さい。
+		新しいパッケージ付きのクラス名に直すようにして下さい。
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<p>
+		特になし
+	</p>
+<!-- __content-end__ --></div>
+
+</body>
+</html>

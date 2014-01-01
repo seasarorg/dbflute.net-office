@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.19 to 0.8.9.20 | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.19 to 0.8.9.20</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<h3>ReplaceSchemaのデータ登録でエラー時は中断</h3>
+	<p>
+		もともとエクセルを利用したデータ登録では、登録できないデータが存在した場合にエラーが発生して、
+		タスク自体が中断されていましたが、TSVやCSVでの登録ではログ出力をして継続していました。
+	</p>
+	<p>
+		TSVやCSVでの登録でも、エクセルと同様に登録できないデータが存在した場合に、エラーが発生してタスクが中断されます。
+		(TSVやCSVによる登録のバッチ更新化によるパフォーマンス改善の修正に関連)
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<h3>ParameterBeanのPaging継承の指定変更：互換あり</h3>
+	<p>
+		Sql2Entityマークの ParameterBean の Paging 継承の指定方法が、以下のように変わりました。
+	</p>
+	<dl class="valuemainlist">
+		<dt>以前</dt><dd>df:pmb exnteds SPB</dd>
+		<dt>これから</dt><dd>df:pmb exnteds Paging</dd>
+	</dl>
+	<p>
+		但し、以前のやり方でも動作します。
+	</p>
+	<p>
+		この仕様を知らない人でも直感的にページングであることがわかるようにと変更させて頂きました。
+		(SPB だと知らない人が見たときに何かわからない)
+	</p>
+<pre><span class="codetitle">ex) ページング検索用のParameterBeanを生成 @OutsideSql</span><code>
+<span class="comment">-- !df:pmb</span> <span class="point">extends Paging</span><span class="comment">!</span>
+<span class="comment">-- !!String memberId!!</span>
+<span class="comment">-- !!Date fromBirthdate!!</span>
+select <span class="abbreviation">...</span>
+  from <span class="abbreviation">...</span>
+</code></pre>
+	<h3>LoadReferrerOption の機能を整理</h3>
+	<p>
+		LoadReferrerOption で toLastKeyCondition()、stopOrderByKey()、および幾つかのコンストラクタが廃止されました。
+		これらは、DBFluteの利用上ほとんど無意味なオプションでした(一部バグもあり)。
+		万が一、利用されていた方はコンパイルエラーとなりますが、最新のドキュメントを参考に修正をお願いします。
+	</p>
+	<div class="detailpage"><a href="http://dbflute.sandbox.seasar.org/ja/manual/function/ormapper/behavior/select/loadreferrer.html">Behavior - LoadReferrer</a></div>
+<!-- __content-end__ --></div></div>
+
+</body>
+</html>

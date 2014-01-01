@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.30 to 0.8.9.31 | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.30 to 0.8.9.31</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<p>
+		特になし
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<h3 id="oldcls">古いタイプの区分値メソッドをデフォルトでOFFに</h3>
+	<p>
+		古いタイプの区分値メソッド、Entity.ClassifyXxx() をデフォルトで自動生成しないようにしました。
+		切り替えてから一年経ったということで踏み切りました。もし、そこら中で classify...
+		を利用していて全て修正するのは大変だと言う場合は、littleAdjustmentMap.dfprop
+		で isMakeEntityOldStyleClassify を true にすると自動生成されるようになります。
+	</p>
+	<p>
+		そもそも、classify...()？なんだろう？と思われる方は、気にする必要はないでしょう。
+		(もし使っていれば必ずコンパイルエラーでわかります)
+	</p>
+<!-- __content-end__ --></div></div>
+
+</body>
+</html>

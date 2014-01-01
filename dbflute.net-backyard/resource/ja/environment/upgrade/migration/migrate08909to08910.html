@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.9 to 0.8.9.10 | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.9 to 0.8.9.10</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<h3>AutoMapping機能で19桁以上はDecimalに</h3>
+	<p>
+		typeMappingMap.dfpropのAutoMapping機能で、19桁以上の場合の挙動が変わります。
+	</p>
+	<ul>
+		<li>今まで：19桁以上でもlong?</li>
+		<li>これから：19桁以上はdecimal?</li>
+	</ul>
+	<p>
+		これは改善点です。19桁以上の場合は、Longは精度的に適していませんでした。
+		もし、19桁以上のNUMERIC(やDECIMAL)でLongで利用している場合は、該当箇所がコンパイルエラーになりますので、
+		そのコンパイルエラーを直すことで移行可能です。
+	</p>
+	<p>
+		また、外だしSQLで "sum関数" を利用したカラムのマッピングも "decimal?" になります。
+		対象のカラムが19桁未満でも、sum関数を利用するからには結果は19桁を超える可能性があるためです。
+		実際にデータベースからはメタ情報として最大の桁数が戻されています。どうしても移行出来ない場合は、
+		Sql2Entityの強制型指定を利用することで、"long?" にマッピングすることが可能です。
+	</p>
+<pre><code>-- ##long? TARGET_COLUMN_NAME##</code></pre>
+	<p>
+		もし、全体としてどうしても移行出来ない場合は、"littleAdjustmentMap.dfprop" に以下のプロパティを "true"
+		にすることで以前のバージョンと同じ挙動になります(19桁以上でもLong)。但し、これは推奨されません。
+	</p>
+<pre><code>; isCompatibleAutoMappingOldStyle = true</code></pre>
+	<h4>columnExeptList改めcolumnExceptMap</h4>
+	<p>
+		"自動生成対象から除外するカラム" を指定する "databaseInfoMap.dfprop" の "columnExeptList"
+		ですが、"どのテーブルのどのカラム" という指定ができない欠点がありました。これを改善し、新たに
+		"columnExceptMap" として生まれ変わりました。 
+	</p>
+<pre><code>; columnExceptMap = map:{
+    ; VENDOR_CHECK = list:{COLUMN_EXCEPT_TEST}
+}</code></pre>
+	<p>
+		古いタイプの "columnExeptList" は廃止され、設定が残っている場合は例外(移行を促すメッセージ付き)になります。
+		もし、利用されている方は、"columnExceptMap"
+		に移行するようにして下さい。
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<p>
+		特になし
+	</p>
+<!-- __content-end__ --></div></div>
+
+</div>
+</body>
+</html>
