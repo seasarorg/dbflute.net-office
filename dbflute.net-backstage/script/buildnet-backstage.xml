@@ -3,8 +3,8 @@
 	<property name="resource.dir" value="../resource"/>
 	<property name="preview.dir" value="../preview"/>
 	<property name="www.dir" value="../../../dbflute.net-www"/>
-	<property name="script.dir" value="../../../dbflute-office/dbflute-backyard/script"/>
-	<property name="ref.css.dir" value="../../../dbflute-office/dbflute-backyard/resource/css"/>
+	<property name="script.dir" value="../../../dbflute-office/dbflute-backstage/script"/>
+	<property name="ref.css.dir" value="../../../dbflute-office/dbflute-backstage/resource/css"/>
 	<property name="createhtml.script" value="createhtml.groovy"/>
 	<property name="deletetmpfile.script" value="deletetmpfile.groovy"/>
 	<property name="resourcechecker.script" value="resourcechecker.groovy"/>
