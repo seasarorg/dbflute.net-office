@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,ConditionBean" />
+	<style type="text/css" title="currentStyle">@import "../../../../../css/dfnet-sub.css";</style>
+	<title>ひとめでConditionBean | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>ひとめでConditionBean</h1>
+	${indexlist}
+
+	<h2 id="function">ConditionBeanの機能</h2>
+	<h3 id="select">データの取得</h3>
+<pre><span class="codetitle">ひとめでConditionBean @C#</span><code>
+MemberCB cb = <span class="keyword">new</span> MemberCB();
+
+cb.SetupSelect_MemberStatus(); <span class="comment">// many-to-oneテーブルの取得</span>
+cb.Specify().SpecifyMemberStatus().ColumnMemberStatusName(); <span class="comment">// 特定カラムだけ</span>
+cb.SetupSelect_MemberSecurityAsOne(); <span class="comment">// one-to-oneの取得</span>
+cb.SetupSelect_MemberServiceAsOne().WithServiceRank(); <span class="comment">// ネストしたテーブルの取得</span>
+cb.SetupSelect_MemberAddress(CurrentDate()); <span class="comment">// 業務的one-to-oneの取得</span>
+
+<span class="comment">// &lt;&lt;&lt; (Specify)DerivedReferrer &gt;&gt;&gt;</span>
+<span class="comment">// 子テーブルの導出カラムを取得 (相関サブクエリ)</span>
+<span class="comment">//  e.g. PCからの最終ログイン日時を取得</span>
+cb.Specify().<span class="point">DerivedMemberLoginList()</span>.<span class="point">Max</span>(delegate(MemberLoginCB subCB) {
+    subCB.Specify().<span class="point">ColumnLoginDatetime()</span>;
+    subCB.Query().SetMobileLoginFlg_Equal_False();
+}, <span class="point">Member.ALIAS_latestLoginDatetime</span>); <span class="comment">// プロパティは手動作成</span>
+<span class="comment">// 必要に応じて、導出カラムをSQL関数で微調整</span>
+<span class="comment">//}, Member.ALI..., new DerivedReferrerOption().coalesce("1192-01-01"));</span>
+
+<span class="comment">// &lt;&lt;&lt; LoadReferrer &gt;&gt;&gt; ※これは検索の後</span>
+<span class="comment">// 子テーブルのデータを取得する (one-to-many)</span>
+<span class="comment">//  e.g. それぞれの会員に紐付く購入データを、購入日時の降順で検索(Load)</span>
+ListResultBean&lt;Member&gt; memberList = <span class="attribute">memberBhv</span>.SelectList(cb); <span class="comment">// リスト検索</span>
+<span class="attribute">memberBhv</span>.<span class="point">LoadPurchaseList</span>(memberList, delegate(PurchaseCB referrerCB) {
+    referrerCB.Query().AddOrderBy_PurchaseDatetime_Desc();
+});
+<span class="comment">// 子テーブルの子テーブルも取得する場合は、LoadReferrerOptionを使う</span>
+<span class="comment">//LoadReferrerOption&lt;MemberCB, Member&gt; option
+<span class="comment">//        = new LoadReferrerOption&lt;MemberCB, Member&gt;();</span>
+<span class="comment">//option.ConditionBeanSetupper = delegate(...);</span>
+<span class="comment">//option.EntityListSetupper = delegate(...);</span>
+<span class="comment">//memberBhv.LoadPurchaseList(memberList, option);
+
+<span class="abbreviation">...</span>
+</code></pre>
+	<h3 id="query">データの絞り込み</h3>
+<pre><span class="codetitle">データの絞り込み @C#</span><code>
+<span class="abbreviation">...</span>
+
+<span class="comment">// 等値 (=)</span>
+cb.Query().SetMemberId_Equal(<span class="literal">1</span>);
+cb.Query().SetMemberStatusCode_Equal_正式会員(); <span class="comment">// 区分値</span>
+
+<span class="comment">// 非等値 (&lt;&gt;)</span>
+cb.Query().SetMemberId_NotEqual(<span class="literal">1</span>);
+<span class="comment">//cb.Query().SetMemberStatusCode_NotEqual_正式会員(<span class="literal">1</span>); ※.NET版では未サポート</span>
+
+<span class="comment">// 大なり小なり (&gt;&lt;)</span>
+cb.Query().SetMemberId_GreaterThan(<span class="literal">3</span>); <span class="comment">// 大なり (&gt;)</span>
+cb.Query().SetMemberId_LessThan(<span class="literal">3</span>); <span class="comment">// 小なり (&lt;)</span>
+cb.Query().SetMemberId_GreaterEqual(<span class="literal">3</span>); <span class="comment">// 大なりイコール (&gt;=)</span>
+cb.Query().SetMemberId_LessEqual(<span class="literal">3</span>); <span class="comment">// 小なりイコール (&lt;=)</span>
+
+<span class="comment">// 対象値の列挙 (in ('a', 'b'))</span>
+cb.Query().SetMemberId_InScope(memberIdList);
+<span class="comment">//cb.Query().SetMemberStatusCode_InScope_AsMemberStatus(cdefList); ※.NET版では未サポート</span>
+
+<span class="comment">// 曖昧検索 (自動エスケープ付き)</span>
+cb.Query().SetMemberId_PrefixSearch(<span class="literal">"S"</span>); <span class="comment">// 前方一致 (like 'S%' escape '|')</span>
+cb.Query().SetMemberId_LikeSearch(<span class="literal">"vi"</span>
+        , <span class="keyword">new</span> LikeSearchOption().LikeContain()); <span class="comment">// オプションでいろいろ</span>
+<span class="comment">// to かつ vi が含まれてる</span>
+<span class="comment">//cb.Query().SetMemberName_LikeSearch("to vi"</span>
+<span class="comment">//    , new LikeSearchOption().LikeContain().SplitByBlank()); ※.NET版では未サポート</span>
+<span class="comment">// to もしくは viが含まれてる</span>
+<span class="comment">//cb.Query().SetMemberName_LikeSearch("to vi"</span>
+<span class="comment">//    , new LikeSearchOption().LikeContain().SplitByBlank().AsOrSplit()); ※.NET版では未サポート</span>
+
+<span class="comment">// nullとかnullじゃないとか</span>
+cb.Query().SetMemberId_IsNull();
+cb.Query().SetMemberId_IsNotNull();
+<span class="comment">//cb.Query().SetMemberId_IsNullOrEmpty(); ※.NET版では未サポート</span>
+
+<span class="comment">// 日付の定型的なFromTo条件</span>
+<span class="comment">//  e.g. 10月 から 12月(一杯) まで</span>
+<span class="comment">DateTime fromMonth = ...(2005/10/01)</span>
+<span class="comment">DateTime toMonth = ...(2005/12/01)</span>
+<span class="comment">cb.Query().SetFormalizedDatetime_FromTo(fromMonth, toMonth</span>
+<span class="comment">        , new FromToOption().CompareAsMonth()); <span class="comment">// オプションでいろいろ</span> ※.NET版では未サポート</span>
+
+<span class="comment">// FromToで、"もしくはnull" 条件</span>
+<span class="comment">//  e.g. 2005年 (まるごと含む) まで</span>
+<span class="comment">//Date toYear = <span class="keyword">new</span> HandyDate(<span class="literal">"2005/01/01"</span>).getDate();</span>
+<span class="comment">//cb.query().setFormalizedDatetime_FromTo(null, toYear</span>
+<span class="comment">//        , <span class="keyword">new</span> FromToOption().compareAsYear().orIsNull()); ※.NET版では未サポート</span>
+
+<span class="comment">// よく使うDateFromTo条件</span>
+<span class="comment">//  e.g. 10/1 から 10/3 (まるごと含む) まで ※要は CompareAsDate()</span>
+DateTime fromDate = ...(2005/10/01)
+DateTime toDate = ...(2005/10/03)
+cb.Query().SetFormalizedDatetime_DateFromTo(fromDate, toDate);
+
+<span class="comment">// 数値の定型的なRangeOf条件</span>
+<span class="comment">//  e.g. 30 から 70 まで、もしくは null</span>
+<span class="comment">//cb.query().setMemberAge_RangeOf(30, 70, <span class="keyword">new</span> RnageOfOption().OrIsNull()); ※.NET版では未サポート</span>
+
+<span class="comment">// &lt;&lt;&lt; ExistsReferrer &gt;&gt;&gt;</span>
+<span class="comment">// 子テーブルの条件で絞り込み (exists (select ...))</span>
+<span class="comment">//  e.g. 2000円以上の購入をしたことのある会員</span>
+cb.Query().<span class="point">ExistsPurchaseList</span>(delegate(PurchaseCB subCB) {
+    subCB.Query().SetPurchasePrice_GreaterThan(<span class="literal">2000</span>);
+});
+
+<span class="comment">// &lt;&lt;&lt; InScopeRelation &gt;&gt;&gt;</span>
+<span class="comment">// existsじゃなくてinScopeで絞り込み (in (select ...))</span>
+<span class="comment">//  e.g. 2000円以上の購入をしたことのある会員</span>
+cb.Query().<span class="point">InScopePurchaseList</span>(delegate(PurchaseCB subCB) {
+    subCB.Query().SetPurchasePrice_GreaterThan(<span class="literal">2000</span>);
+});
+
+<span class="comment">// &lt;&lt;&lt; (Query)DerivedReferrer &gt;&gt;&gt;</span>
+<span class="comment">// 子テーブルの導出カラムで絞り込み (相関サブクエリ)</span>
+<span class="comment">//  e.g. 支払い済み購入の最大購入価格が2000円以上である会員</span>
+cb.Query().<span class="point">DerivedPurchaseList()</span>.<span class="point">Max</span>(delegate(PurchaseCB subCB) {
+    subCB.Specify().<span class="point">ColumnPurchasePrice()</span>;
+    subCB.Query().SetPaymentCompleteFlg_Equal_True();
+}).<span class="point">GreaterEqual</span>(<span class="literal">2000</span>);
+<span class="comment">// 必要に応じて、導出カラムをSQL関数で微調整</span>
+<span class="comment">//}, new DerivedReferrerOption().Coalesce(0)).GreaterEqual(...); ※.NET版では未サポート</span>
+
+<span class="comment">// &lt;&lt;&lt; ScalarCondition &gt;&gt;&gt;</span>
+<span class="comment">// 自分自身の導出値との比較で絞り込み (普通のサブクエリ)</span>
+<span class="comment">//  e.g. 一番若い正式会員の生年月日と同じ生年月日を持つ会員</span>
+cb.Query().<span class="point">Scalar_Equal()</span>.<span class="point">Max</span>(delegate(MemberCB subCB) {
+    subCB.Specify().<span class="point">ColumnBirthdate()</span>;
+    subCB.Query().SetMemberStatusCode_Equal_Formalized();
+});
+
+<span class="comment">// &lt;&lt;&lt; ScalarConditionPartitionBy &gt;&gt;&gt;</span>
+<span class="comment">// カテゴリーごとの自分自身の導出値との比較で絞り込み (相関サブクエリ)</span>
+<span class="comment">//  e.g. それぞれの会員ステータスごとに一番若い会員</span>
+<span class="comment">//cb.Query().Scalar_Equal().Max(delegate(MemberCB subCB) { ※.NET版では未サポート</span>
+<span class="comment">//    subCB.Specify().ColumnBirthdate();</span>
+<span class="comment">//}).PartitionBy(delegate(MemberCB subCB) {</span>
+<span class="comment">//    subCB.Specify().ColumnMemberStatusCode();</span>
+<span class="comment">//});</span>
+
+<span class="comment">// &lt;&lt;&lt; MyselfInScope &gt;&gt;&gt;</span>
+<span class="comment">// 自分自身の回避的サブクエリで絞り込み (限定的回避策)</span>
+cb.Query().MyselfInScope(delegate(MemberCB subCB) {
+    <span class="comment">//subCB.Specify().Column...()</span> <span class="comment">// 指定がなければ PK カラム</span>
+    subCB.Query().SetMemberStatusCode_Equal_正式会員(); <span class="comment">// 絞り込み条件</span>
+});
+
+<span class="comment">// カラム同士の比較で絞り込み</span>
+<span class="comment">//  e.g. 正式会員日時が退会日時よりも昔である会員</span>
+cb.<span class="point">ColumnQuery</span>(delegate(MemberCB spCB) {
+    spCB.Specify().<span class="point">ColumnFormalizedDatetime()</span>;
+}).LessThan(delegate(MemberCB spCB) {
+    spCB.Specify().SpecifyMemberWithdrawalAsOne().<span class="point">ColumnWithdrawalDatetime()</span>;
+});
+<span class="comment">// 必要に応じて、右辺(もしくは左辺)のカラムをSQL関数で微調整</span>
+<span class="comment">//}).Convert(new ColumnConversionOption().TruncTime().AddDay(7)); ※.NET版では未サポート</span>
+
+<span class="comment">// &lt;&lt;&lt; OrScopeQuery &gt;&gt;&gt;</span>
+<span class="comment">// or条件 (デフォルトはand条件)</span>
+<span class="comment">//  e.g. 会員名称が "S" もしくは "J" で始まる、もしくは、会員IDが 3 の会員</span>
+cb.<span class="point">OrScopeQuery</span>(delegate(MemberCB orCB) {
+    orCB.Query().SetMemberName_PrefixSearch(<span class="literal">"S"</span>);
+    orCB.Query().SetMemberName_PrefixSearch(<span class="literal">"J"</span>);
+    orCB.Query().SetMemberId_Equal(<span class="literal">3</span>);
+});
+
+<span class="comment">// &lt;&lt;&lt; OrScopeQueryAndPart &gt;&gt;&gt;</span>
+<span class="comment">// or条件の中でand条件</span>
+<span class="comment">//  e.g. 退会会員、もしくは、会員IDが100以上で正式会員日時がnullの会員</span>
+<span class="comment">//cb.OrScopeQuery(delegate(MemberCB orCB) {</span>
+<span class="comment">//    orCB.Query().SetMemberStatusCode_Equal_Withdrawal();</span>
+<span class="comment">//    orCB.OrScopeQueryAndPart(delegate(MemberCB andCB) { ※.NET版では未サポート</span>
+<span class="comment">//        andCB.Query().SetMemberId_GreaterEqual(100);</span>
+<span class="comment">//        andCB.Query().SetFormalizedDatetime_IsNull();</span>
+<span class="comment">//    });</span>
+<span class="comment">//});</span>
+
+<span class="comment">// &lt;&lt;&lt; UnionQuery &gt;&gt;&gt;</span>
+<span class="comment">// unionの追加</span>
+<span class="comment">//  e.g. unionで、生年月日が2005年以降の会員を検索</span>
+cb.<span class="point">Union</span>(delegate(MemberCB unionCB) {
+    DateTime targetDate = ...(2005/01/01);
+    unionCB.Query().SetBirthdate_GreaterEqual</span>(targetDate);
+});
+
+<span class="abbreviation">...</span>
+</code></pre>
+	<h3 id="orderby">データの並び替え</h3>
+<pre><span class="codetitle">データの並び替え @C#</span><code>
+<span class="abbreviation">...</span>
+
+cb.Query().AddOrderBy_MemberId_Asc(); <span class="comment">// 昇順ソート</span>
+cb.Query().AddOrderBy_FormalizedDatetime_Desc(); <span class="comment">// 降順ソート</span>
+cb.Query().AddOrderBy_Birthdate_Desc().WithNullsFirst(); <span class="comment">// nullを先に</span>
+cb.Query().AddOrderBy_Birthdate_Desc().WithNullsLast(); <span class="comment">// nullを後に</span>
+
+<span class="comment">// &lt;&lt;&lt; ManualOrder &gt;&gt;&gt;</span>
+<span class="comment">// 特定のロジックで手動ソートする</span>
+<span class="comment">//  e.g. 24時間以内に更新されたものを優先して並べる</span>
+<span class="comment">//ManualOrderBean mob = new ManualOrderBean();</span>
+<span class="comment">//DateTime date24before = ...(24時間前)</span>
+<span class="comment">//mob.When_GreaterThan(date24before); <span class="comment">// 更新日時 &gt; 24時間前</span></span>
+<span class="comment">//cb.Query().AddOrderBy_UpdateDatetime_Asc().WithManualOrder(mob); ※.NET版では未サポート</span>
+
+<span class="comment">// &lt;&lt;&lt; SpecifiedDerivedOrderBy &gt;&gt;&gt;</span>
+<span class="comment">// 導出カラムでソートする</span>
+<span class="comment">//  e.g. 最終ログインが近いものから</span>
+cb.Query().AddSpecifiedDerivedOrderBy_Desc(Member.ALIAS_latestLoginDatetime);
+
+<span class="abbreviation">...</span>
+</code></pre>
+	<h3 id="style">検索スタイル</h3>
+<pre><span class="codetitle">検索スタイル @C#</span><code>
+<span class="abbreviation">...</span>
+
+<span class="comment">// カウント検索</span>
+<span class="keyword">int</span> count = <span class="attribute">memberBhv</span>.SelectCount(cb);
+
+<span class="comment">// 一件検索 (なければnull)</span>
+Member member = <span class="attribute">memberBhv</span>.SelectEntity(cb);
+
+<span class="comment">// 一件検索 (なければ例外)</span>
+Member member =  = <span class="attribute">memberBhv</span>.SelectEntityWithDeletedCheck(cb);
+
+<span class="comment">// リスト検索</span>
+ListResultBean&lt;Member&gt; memberList = <span class="attribute">memberBhv</span>.SelectList(cb);
+
+<span class="comment">// ページング検索</span>
+PagingResultBean&lt;Member&gt; page = <span class="attribute">memberBhv</span>.SelectPage(cb);
+
+<span class="comment">// &lt;&lt;&lt; ScalarSelect &gt;&gt;&gt;</span>
+<span class="comment">// 導出したスカラ値を検索する</span>
+<span class="comment">//  e.g. 正式会員の中で、一番若い生年月日を検索</span>
+<span class="comment">//Date max = memberBhv.ScalarSelect(typeof(DateTime)).max(delegate(MemberCB cb) { ※.NET版では未サポート</span>
+<span class="comment">//    cb.Specify().ColumnBirthdate(); <span class="comment">// 生年月日の最大値</span></span>
+<span class="comment">//    cb.Query().SetMemberStatusCode_Equal_Formalized(); <span class="comment">// 正式会員に限る</span></span>
+<span class="comment">//});</span>
+
+<span class="comment">// &lt;&lt;&lt; CursorSelect &gt;&gt;&gt;</span>
+<span class="comment">// カーソル検索する (一件ずつフェッチ)</span>
+<span class="comment">//memberBhv.SelectCursor(cb, delegate(Member entity) { ※.NET版では未サポート (外だしSQLでカーソル検索)</span>
+<span class="comment">//    Integer memberId = entity.getMemberId();</span>
+<span class="comment">//    String memberName = entity.getMemberName();</span>
+<span class="comment">//    <span class="abbreviation">...</span></span>
+<span class="comment">//});</span>
+
+<span class="comment">// &lt;&lt;&lt; QueryDelete &gt;&gt;&gt;</span>
+<span class="attribute">memberBhv</span>.QueryDelete(cb);
+
+<span class="comment">// &lt;&lt;&lt; QueryUpdate &gt;&gt;&gt;</span>
+Member member = <span class="keyword">new</span> Member();
+member.SetMemberStatusCode_仮会員();
+<span class="attribute">memberBhv</span>.QueryUpdate(member, cb);
+
+<span class="abbreviation">...</span>
+</code></pre>
+	<h3 id="option">オプション</h3>
+<pre><span class="codetitle">オプション @C#</span><code>
+<span class="abbreviation">...</span>
+
+<span class="comment">// 条件値としてnullや空文字をセットしたら例外に (デフォルトでは無視される)</span>
+cb.CheckInvalidQuery();
+
+<span class="comment">// 更新ロックを取得する</span>
+cb.LockForUpdate();
+
+<span class="abbreviation">...</span>
+</code></pre>
+
+<!-- __content-end__ --></div></div>
+
+</div>
+</body>
+</html>

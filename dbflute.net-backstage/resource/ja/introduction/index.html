@@ -35,6 +35,11 @@
 	<p>
 		ここでは、Java版との違いに着目して、DBFlute.NET特有の特徴を紹介します。
 	</p>
+	<h3 id="hitomecb">ひとめでConditionBean (.NET版)</h3>
+	<p>
+		とにかく、ConditionBeanについて、ぱっと見たかったら
+	</p>
+	<div class="detailpage"><a href="../manual/function/ormapper/conditionbean/hitomecb.html">ひとめでConditionBean (.NET版)</a></div>
 
 	<h2 id="structure">DBFlute.NETの構造</h2>
 	<p>
@@ -161,7 +166,10 @@
 		<dt>defaultPackage</dt>
 		<dd>
 			outsideSqlDefinitionMap.dfprop に、C#特有の defaultPackage
-			プロパティが存在します。既定の名前空間を利用してい場合に、その名前空間を指定することで、外だしSQLを探すパスが調整されます。
+			プロパティが存在します。"既定の名前空間" を利用してい場合に、その名前空間を指定することで、外だしSQLを探すパスが調整されます。
+		</dd>
+		<dd>
+			知らずに "既定の名前空間" を使っていると、DBFlute.NETとして正常な構成であっても外だしSQLが見つからない可能性がありますので注意を。
 		</dd>
 		<dt>omitResourcePathPackage</dt>
 		<dd>
@@ -206,7 +214,7 @@
 		C#の言語仕様である "プロパティ" を、Entity
 		等におけるプロパティに採用しています。ゆえに、プロパティを呼び出すときに、Java版とはファーストタッチが変わりますのでご注意下さい。
 	</p>
-<pre><span class="codetitle">ex) Entityのプロパティ {MEMBER} @Java</span><code>
+<pre><span class="codetitle">e.g. Entityのプロパティ {MEMBER} @Java</span><code>
 Member member = <span class="keyword">new</span> Member();
 member.<span class="point">MemberId</span> = <span class="literal">3</span>;
 member.<span class="point">MemberName</span> = <span class="literal">"Savicevic"</span>;
@@ -221,7 +229,7 @@ String memberName = member.<span class="point">MemberName</span>;
 		但し、区分値を設定する場合などは、Set
 		で始まるメソッドで表現されます。通常の値の設定と、区分値の設定ではファーストタッチが変わりますのでご注意下さい。
 	</p>
-<pre><span class="codetitle">ex) Entityのプロパティ {MEMBER} @Java</span><code>
+<pre><span class="codetitle">e.g. Entityのプロパティ {MEMBER} @Java</span><code>
 Member member = <span class="keyword">new</span> Member();
 member.<span class="point">SetMemberStatusCode_Formalized()</span>;
 <span class="comment">//member.MemberStatusCode = "FML";
@@ -232,7 +240,7 @@ member.<span class="point">SetMemberStatusCode_Formalized()</span>;
 		一部、ディベロッパーが目にすることはほとんどないと想定される内部クラスでのメソッドでは、
 		先頭が小文字のものがあります。
 	</p>
-<pre><span class="codetitle">ex) ConditionBeanやBehaviorのメソッド名の先頭 {MEMBER} @Java</span><code>
+<pre><span class="codetitle">e.g. ConditionBeanやBehaviorのメソッド名の先頭 {MEMBER} @Java</span><code>
 cb.Query().<span class="point">SetMemberName_Equal</span>(value);
 <span class="abbreviation">...</span> = <span class="attribute">memberBhv</span>.<span class="point">SelectList</span>(cb);
 </code></pre>
@@ -246,7 +254,7 @@ cb.Query().<span class="point">SetMemberName_Equal</span>(value);
 		<dt>Java</dt><dd>先頭が小文字 (memberName)</dd>
 		<dt>C#</dt><dd>先頭が大文字 (MemberName)</dd>
 	</dl>
-<pre><span class="codetitle">ex) 会員テーブルの会員名称が 'Stojkovic' であること {MEMBER, MEMBER_NAME} @OutsideSql</span><code>
+<pre><span class="codetitle">e.g. 会員テーブルの会員名称が 'Stojkovic' であること {MEMBER, MEMBER_NAME} @OutsideSql</span><code>
 <span class="comment">/*IF pmb.MemberName != null*/</span>
 <span class="keyword">and</span> MEMBER_NAME <span class="keyword">like</span> <span class="comment">/*pmb.MemberName*/</span><span class="attribute">'S%'</span>
 <span class="comment">/*END*/</span>
@@ -256,7 +264,7 @@ cb.Query().<span class="point">SetMemberName_Equal</span>(value);
 		コールバックを実装するのに、インターフェースではなく delegate
 		を利用します(但し、複数メソッドが必要な箇所では同じくインターフェース方式)。
 	</p>
-<pre><span class="codetitle">ex) ExistsReferrerのコールバックで delegate {MEMBER, PURCHASE} @Java</span><code>
+<pre><span class="codetitle">e.g. ExistsReferrerのコールバックで delegate {MEMBER, PURCHASE} @Java</span><code>
 MemberCB cb = <span class="keyword">new</span> MemberCB();
 cb.Query().ExistsPurchaseList(<span class="point">delegate</span>(PurchaseCB subCB) {
     subCB.Query().SetPurchasePrice_GreaterEqual(<span class="literal">2000</span>);
