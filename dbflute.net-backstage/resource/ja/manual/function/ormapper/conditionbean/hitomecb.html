@@ -75,6 +75,8 @@ cb.Query().SetMemberId_LessEqual(<span class="literal">3</span>); <span class="c
 <span class="comment">// 対象値の列挙 (in ('a', 'b'))</span>
 cb.Query().SetMemberId_InScope(memberIdList);
 <span class="comment">//cb.Query().SetMemberStatusCode_InScope_AsMemberStatus(cdefList); ※.NET版では未サポート</span>
+<span class="comment">// not in (...) なら</span>
+<span class="comment">//cb.Query().SetMemberId_NotInScope(...)</span>
 
 <span class="comment">// 曖昧検索 (自動エスケープ付き)</span>
 cb.Query().SetMemberId_PrefixSearch(<span class="literal">"S"</span>); <span class="comment">// 前方一致 (like 'S%' escape '|')</span>
@@ -86,11 +88,13 @@ cb.Query().SetMemberId_LikeSearch(<span class="literal">"vi"</span>
 <span class="comment">// to もしくは viが含まれてる</span>
 <span class="comment">//cb.Query().SetMemberName_LikeSearch("to vi"</span>
 <span class="comment">//    , new LikeSearchOption().LikeContain().SplitByBlank().AsOrSplit()); ※.NET版では未サポート</span>
+<span class="comment">// not like なら</span>
+<span class="comment">//cb.Query().SetMemberName_NotLikeSearch(...)</span>
 
 <span class="comment">// nullとかnullじゃないとか</span>
-cb.Query().SetMemberId_IsNull();
-cb.Query().SetMemberId_IsNotNull();
-<span class="comment">//cb.Query().SetMemberId_IsNullOrEmpty(); ※.NET版では未サポート</span>
+cb.Query().SetBirthdate_IsNull();
+cb.Query().SetBirthdate_IsNotNull();
+<span class="comment">//cb.Query().SetMemo_IsNullOrEmpty(); ※.NET版では未サポート</span>
 
 <span class="comment">// 日付の定型的なFromTo条件</span>
 <span class="comment">//  e.g. 10月 から 12月(一杯) まで</span>
@@ -121,6 +125,8 @@ cb.Query().SetFormalizedDatetime_DateFromTo(fromDate, toDate);
 cb.Query().<span class="point">ExistsPurchaseList</span>(delegate(PurchaseCB subCB) {
     subCB.Query().SetPurchasePrice_GreaterThan(<span class="literal">2000</span>);
 });
+<span class="comment">// not exists なら</span>
+<span class="comment">//cb.Query().NotExistsPurchaseList(...)</span>
 
 <span class="comment">// &lt;&lt;&lt; InScopeRelation &gt;&gt;&gt;</span>
 <span class="comment">// existsじゃなくてinScopeで絞り込み (in (select ...))</span>
@@ -128,6 +134,8 @@ cb.Query().<span class="point">ExistsPurchaseList</span>(delegate(PurchaseCB sub
 cb.Query().<span class="point">InScopePurchaseList</span>(delegate(PurchaseCB subCB) {
     subCB.Query().SetPurchasePrice_GreaterThan(<span class="literal">2000</span>);
 });
+<span class="comment">// not in (...) なら</span>
+<span class="comment">//cb.Query().NotInScopePurchaseList(...)</span>
 
 <span class="comment">// &lt;&lt;&lt; (Query)DerivedReferrer &gt;&gt;&gt;</span>
 <span class="comment">// 子テーブルの導出カラムで絞り込み (相関サブクエリ)</span>
