@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="keywords" content="DBFlute.NET,移行時の注意,Migration,Attention" />
+	<style type="text/css" title="currentStyle">@import "../../../../css/dfnet-sub.css";</style>
+	<title>移行 0.8.9.57 to 0.8.9.58 | DBFlute.NET</title>
+</head>
+<body>
+<div id="container" class="ct-manual">
+<div id="mainbar"><div id="header">
+</div>
+
+<div id="content"><!-- __content-start__ -->
+	<h1>移行 0.8.9.57 to 0.8.9.58</h1>
+	${indexlist}
+
+	<h2 id="basic">お約束の注意点</h2>
+	<dl class="textlist">
+		<dt>新しいクラスのプロジェクトへの追加</dt>
+		<dd>
+			新しいクラスがあるかもしれないので、追加を忘れずに <span class="freecomment">(Koropokkur.NETの利用を推奨)</span>
+			<div class="relatedpage"><a href="../migration/index.html#newclass">DBFlute.NETの移行情報 - 新しいクラスの追加</a></div>
+		</dd>
+		<dt>タスクを実行し忘れないように</dt>
+		<dd>Generateタスクだけでなく、(外だしSQLがある場合は)Sql2Entityタスクも実行</dd>
+	</dl>
+
+	<h2 id="env">環境上の注意点</h2>
+	<h3 is="notrtrim">ReplaceSchemaのエクセルデータはrtrimされない</h3>
+	<p>
+		前のバージョンで、"両端トリム" から "右トリムのみ" となりましたが、このバージョンからそもそも右も左もトリムされません。
+		エクセルの存在しているそのままの値が登録されます。
+		エクセルと実際に入ったデータに微妙な食い違いがあるのも紛らわしいという考えから、デフォルトではそのような挙動になるようにしました。
+	</p>
+	<p>
+		もし、右トリムをしたいときは、loadingControlMap.dataprop にて isRTrimCellValue = true と設定すると、右トリムになります。
+	</p>
+	<div class="relatedpage"><a href="../../../manual/function/generator/task/replaceschema/loadingcontrol.html#isrtrimcellvalue">データ登録制御 (loadingControl) - isRTrimCellValue</a></div>
+	<h3 is="h2database">H2 Databaseのアップグレード</h3>
+	<p>
+		同梱している H2 Database のバージョンが 1.4.178 になっていますが、以前のバージョンで作成された H2 Database
+		からスキーマのメタデータが取得できない可能性があります。その場合は、1.4.178 で ReplaceSchema して新たに H2 Database を作り直すとメタデータを取得することができます。
+	</p>
+	<p>
+		<span class="freecomment">(H2 Databaseに関しては、互換性に関わらずアップグレードしていくポリシーです)</span>
+	</p>
+
+	<h2 id="impl">実装上の注意点</h2>
+	<p>
+		特になし
+	</p>
+<!-- __content-end__ --></div></div>
+
+</body>
+</html>
